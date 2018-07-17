@@ -50,15 +50,25 @@ for n=1:N
     end
 end
 
-scale=1/100000;
+meanDepth=mean(Reconst(3,:));
+scale=0.3*meanDepth/CalM(1,1);
+% Predefined colors for first cameras. Others are taken random.
+colors=[255 0 0; 0 255 0; 0 0 255];
+colsOut=[];
 % Camera Points and vertices
 for m=1:M
-    O=-R_t((m-1)*3+(1:3),1:3)'*R_t((m-1)*3+(1:3),4);
-    fprintf(file,'%f %f %f 0 255 0\n',O(1),O(2),O(3));
+    R=R_t((m-1)*3+(1:3),1:3);
+    O=-R'*R_t((m-1)*3+(1:3),4);
+    col=[randi(255) randi(255) randi(255)];
+    if m<=size(colors,1)
+        col=uint8(colors(m,:));
+    endif
+    colsOut=[colsOut;col];
+    fprintf(file,'%f %f %f %d %d %d\n',O(1),O(2),O(3),col(1),col(2),col(3));
     frame=[CalM((m-1)*3+(1:2),3);CalM((m-1)*3+1,1)]*scale;
     for i=1:4
-        P=R_t((m-1)*3+(1:3),1:3)'*frame+O;
-        fprintf(file,'%f %f %f 0 255 0\n',P(1),P(2),P(3));
+        P=R'*frame+O;
+        fprintf(file,'%f %f %f %d %d %d\n',P(1),P(2),P(3),col(1),col(2),col(3));
         frame(1)=-frame(1);
         if i==2
             frame(2)=-frame(2);
@@ -67,20 +77,15 @@ for m=1:M
 end
 for m=1:M
     ind=N+(m-1)*5;
+    % Different colors for cameras, despite meshlab ignoring edge color
+    col=colsOut(m,:);
     for i=1:4
-        fprintf(file,'%d %d 0 255 0\n',ind, ind+i);
+        fprintf(file,'%d %d %d %d %d\n',ind, ind+i, col(1),col(2),col(3));
     end
-    fprintf(file,'%d %d 0 255 0\n',ind+1, ind+2);
-    fprintf(file,'%d %d 0 255 0\n',ind+2, ind+4);
-    fprintf(file,'%d %d 0 255 0\n',ind+4, ind+3);
-    fprintf(file,'%d %d 0 255 0\n',ind+3, ind+1);
+    fprintf(file,'%d %d 0 0 0\n',ind+1, ind+2); %different color to distinguish
+    fprintf(file,'%d %d %d %d %d\n',ind+2, ind+4, col(1),col(2),col(3));
+    fprintf(file,'%d %d %d %d %d\n',ind+4, ind+3, col(1),col(2),col(3));
+    fprintf(file,'%d %d %d %d %d\n',ind+3, ind+1, col(1),col(2),col(3));
 end
 
 fclose(file);
-
-
-
-
-
-
-
