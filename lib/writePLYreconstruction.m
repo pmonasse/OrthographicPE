@@ -62,7 +62,7 @@ for m=1:M
     col=[randi(255) randi(255) randi(255)];
     if m<=size(colors,1)
         col=uint8(colors(m,:));
-    endif
+    end
     colsOut=[colsOut;col];
     fprintf(file,'%f %f %f %d %d %d\n',O(1),O(2),O(3),col(1),col(2),col(3));
     frame=[CalM((m-1)*3+(1:2),3);CalM((m-1)*3+1,1)]*scale;
