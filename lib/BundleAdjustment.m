@@ -105,7 +105,7 @@ variables0=reshape([angles0(:,2:M), translations0(:,2:M), Reconst0],[],1);
 if Octave
   options = optimset('Algorithm','lm_svd_feasible','Jacobian','on','Display','off');
 else
-  options = optimoptions(@lsqnonlin,'Algorithm','levenberg-marquardt','Jacobian','on','Display','off');
+  options = optimoptions(@lsqnonlin,'Algorithm','levenberg-marquardt','Jacobian','on','Display','iter','TolFun',1e-3);
 end
 [variables,~,~,~,output]=lsqnonlin(func,variables0,[],[],options);
 
