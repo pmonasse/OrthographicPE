@@ -77,4 +77,12 @@ writeOrientations('data/orientations.txt',Solution);
 dlmwrite('data/tracks.txt',Corresp.','delimiter',' ');
 dlmwrite('data/inliers.txt',Corresp(:,inliers).','delimiter',' ');
 
+outnames={'output_0.png','output_1.png','output_2.png'};
+for i=1:3
+    image=imread(strcat(im_path,image_names{i}));
+    out=insertMarker(image,Corresp(2*i-1:2*i,:)','o','color','red');
+    out=insertMarker(out,Corresp(2*i-1:2*i,inliers)','o','color','green');
+    imwrite(out,strcat(im_path,outnames{i}));
+end
+
 end
